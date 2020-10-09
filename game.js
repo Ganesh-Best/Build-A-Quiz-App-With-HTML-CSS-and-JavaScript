@@ -1,5 +1,8 @@
 const question = document.getElementById("question");
-const choices = Array.from(document.getElementsByClassName('choice-text'));
+const choices = Array.from(document.getElementsByClassName("choice-text"));
+const questionCounterText = document.getElementById("questionCounter");
+const scoreText = document.getElementById("score");
+
 
 let currentQuestion = {};
 let acceptingAnswers = false;
@@ -9,11 +12,11 @@ let availableQuesions = [];
 
 let questions = [
     {
-        question: 'Inside which HTML element do we put the JavaScript??',
-        choice1: '<script>',
-        choice2: '<javascript>',
-        choice3: '<js>',
-        choice4: '<scripting>',
+        question: "Inside which HTML element do we put the JavaScript?",
+        choice1: "<script>",
+        choice2: "<javascript>",
+        choice3: "<js>",
+        choice4: "<scripting>",
         answer: 1,
     },
     {
@@ -52,6 +55,8 @@ getNewQuestion = () => {
         return window.location.assign("/end.html");
     }
     questionCounter++;
+    questionCounterText.innerText = `${questionCounter}/${MAX_QUESTIONS}`;
+
     const questionIndex = Math.floor(Math.random() * availableQuesions.length);
     currentQuestion = availableQuesions[questionIndex];
     question.innerText = currentQuestion.question;
@@ -76,11 +81,23 @@ choices.forEach((choice) => {
 
         const classToApply = selectedAnswer == currentQuestion.answer ? "correct" : "incorrect";
 
-        selectedChoice.parentElement.classList.add(classToApply);
-        selectedChoice.parentElement.classList.remove(classToApply);
+        if(classToApply === "correct") {
+            incrementScore(CORRECT_BONUS);
+        }
         
-        getNewQuestion();
+        selectedChoice.parentElement.classList.add(classToApply);
+        
+        setTimeout(() => {
+            selectedChoice.parentElement.classList.remove(classToApply);
+            getNewQuestion();
+        }, 1000); 
     });
 });
 
+incrementScore = num => {
+    score += num;
+    scoreText.innerText = score;
+};
+
 startGame();
+
